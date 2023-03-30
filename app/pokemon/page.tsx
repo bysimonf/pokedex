@@ -14,7 +14,7 @@ async function getKantoPokemon() {
     pokemonListDetailed.push(data)
   }
 
-  console.log(pokemonListDetailed[0].name)
+//pokemonListDetailed[0].types.forEach((type :any) => console.log(type.type.name))
 
   return pokemonListDetailed as any[]
 }
@@ -40,7 +40,13 @@ function Pokemon({ pokemon }:any) {
   return (
     <>
       <h2>{pokemon.name}</h2>
-      <img src={pokemon.sprites.front_default} />
+      <img src={pokemon.sprites.front_default} alt={pokemon.name} />
+      <ul>
+        {
+          pokemon.types.map((type :any) => (
+            <li key={type.type.name}>{type.type.name}</li>
+          ))}
+      </ul>
     </>
   )
 }
