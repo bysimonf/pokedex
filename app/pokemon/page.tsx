@@ -1,26 +1,27 @@
-// docs: https://beta.nextjs.org/docs/data-fetching/fetching
+// docs: https://beta.nextjs.org/docs/data-fetching/fetching (server component)
+const pokemonListDetailed: any[] = []
 
-async function getKantoPokemon() {
-  const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151')
+async function getKantoPokemons() {
+  const res = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151') // not needed: { cache: 'no-store' } (would be for dynamic fetching per request)
   const data = await res.json()
 
   const pokemonList = data.results as any[]
 
-  const pokemonListDetailed: any[] = []
-
   for (const pokemon of pokemonList) {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
-    const data = await res.json()
-    pokemonListDetailed.push(data)
+    getPokemonDetails(pokemon)
   }
-
-//pokemonListDetailed[0].types.forEach((type :any) => console.log(type.type.name))
 
   return pokemonListDetailed as any[]
 }
 
+async function getPokemonDetails(pokemon: { name: any }) {
+  const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
+  const data = await res.json()
+  pokemonListDetailed.push(data)
+}
+
 export default async function PokemonPage() {
-  const kantoPokemon = await getKantoPokemon()
+  const kantoPokemon = await getKantoPokemons()
 
   return (
     <>
