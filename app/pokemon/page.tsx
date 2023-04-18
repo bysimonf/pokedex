@@ -1,4 +1,6 @@
 // docs: https://beta.nextjs.org/docs/data-fetching/fetching (server component)
+import styles from './styles.module.css'
+
 const pokemonListDetailed: any[] = []
 
 async function getKantoPokemons() {
@@ -8,16 +10,21 @@ async function getKantoPokemons() {
   const pokemonList = data.results as any[]
 
   for (const pokemon of pokemonList) {
-    getPokemonDetails(pokemon)
+    getPokemonDetails(pokemon, pokemonListDetailed)
   }
 
   return pokemonListDetailed as any[]
 }
 
-async function getPokemonDetails(pokemon: { name: any }) {
+async function getPokemonDetails(pokemon: { name: any }, pokemonListDetailed: any[]) {
   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name}`)
   const data = await res.json()
-  pokemonListDetailed.push(data)
+
+  // Check if the Pokemon already exists in the array
+  const existingPokemon = pokemonListDetailed.find(p => p.id === data.id)
+  if (!existingPokemon) {
+    pokemonListDetailed.push(data)
+  }
 }
 
 export default async function PokemonPage() {
@@ -39,7 +46,7 @@ export default async function PokemonPage() {
 
 function Pokemon({ pokemon }:any) {
   return (
-    <>
+    <div>
       <h2>{pokemon.name}</h2>
       <img src={pokemon.sprites.front_default} alt={pokemon.name} />
       <ul>
@@ -48,6 +55,6 @@ function Pokemon({ pokemon }:any) {
             <li key={type.type.name}>{type.type.name}</li>
           ))}
       </ul>
-    </>
+    </div>
   )
 }
